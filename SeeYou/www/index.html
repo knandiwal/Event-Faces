@@ -22,21 +22,50 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>Hello World</title>
-    </head>
-    <body>
-        <div class="app">
-            <h1>PhoneGap</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
-        </div>
+        <!-- <link rel="stylesheet" type="text/css" href="css/index.css" /> --> 
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript">
-            app.initialize();
-        </script>
+        <!-- <script type="text/javascript">app.initialize();
+        </script> 
+         
+        -->
+        
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+        
+       
+       <style type="text/css">
+body {
+    
+}
+.ui-page {
+    
+}
+.ui-content{
+    background: url(img/peoplebg.JPG);
+	background-repeat:no-repeat;
+    background-position:center center;
+    background-size:cover;
+}
+</style>
+        <title>SeeYou</title>
+    </head>
+    <body >
+        <div data-role="page" id="page-home">
+
+          <div data-role="header" data-theme="a">
+                  <h1>SeeYou Face Tagging</h1>
+          </div>
+          <div data-role="content">
+              <a href="newevent.html" data-role="button" data-icon="plus" >New Event</a>
+              <a href="#" data-role="button" data-icon="search" >Find Event</a>
+              <a href="#" data-role="button" data-icon="grid" >View Photos</a>
+              <a href="#" data-role="button" data-icon="gear" >Settings</a>
+          </div>
+          <div data-role="footer" data-theme="a"></div>
+
+        </div>
+            
     </body>
 </html>
