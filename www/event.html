@@ -154,7 +154,22 @@
 	</head>
 
 	<body>
-	
+		<div data-role="page" id="EventList"> 
+		  
+		<div data-role="header">
+		<h1>Events</h1>
+	</div>
+		<div data-role="content" id="content" >
+		
+		<ul data-role="listview" data-filter="true" data-filter-placeholder="Seach Events...">
+			<li><a href="#NewEvent" data-prefetch> <img src="img/plusorange.png">
+					<h4>New Event</h4>
+					<p>Add a new event</p>
+				</a>
+			</li>
+			<a id="eventItem"></a>
+		</ul>
+		</div>
 		<script>
 		  	$( document ).delegate("#EventList", "pageinit", function() {
 				db.transaction(getEvents, onError);
@@ -184,24 +199,6 @@
 
 			
 		  </script>
-		  
-		  
-		<div data-role="page" id="EventList"> 
-		  
-		<div data-role="header">
-		<h1>Events</h1>
-	</div>
-		<div data-role="content" id="content" >
-		
-		<ul data-role="listview" data-filter="true" data-filter-placeholder="Seach Events...">
-			<li><a href="#NewEvent" data-prefetch> <img src="img/plusorange.png">
-					<h4>New Event</h4>
-					<p>Add a new event</p>
-				</a>
-			</li>
-			<a id="eventItem"></a>
-		</ul>
-	</div>
 		<div data-role="footer" data-theme="c" data-id="main" data-position="fixed">
 		<div data-role="navbar">
 				<ul>
@@ -214,48 +211,70 @@
 	</div>
 	</div>
 <div data-role="page" id="NewEvent"> 
-		<script>
-		  	$( document ).delegate("#NewEvent", "pageinit", function() {
-				
-			});
-		  </script>
+		
 		<div data-role="header">
 		<h1>New Event</h1>
 	</div>
 		<div data-role="content" id="content" >
-		<div> <img src="img/peoplebg.JPG" height="200px" id="largeImage"> </div>
-		<form action="">
-				<div data-role="fieldcontainer">
-				<label for="title">Title</label>
-				<input type="text" id="title" name="title">
+		<div> 
+			<img src="img/peoplebg.JPG" width="100%" id="largeImage"> </div>
+		
+			<div data-role="fieldcontainer">
+				<label for="newTitle">Title</label>
+				<input type="text" id="newTitle" name="newTitle">
 			</div>
-				<div data-role="fieldcontainer">
-				<label for="date">Date</label>
-				<input type="datetime" id="date" name="date">
+			<div data-role="fieldcontainer">
+				<label for="newDate">Date</label>
+				<input type="datetime" id="newDate" name="newDate">
 			</div>
-				<div data-role="fieldcontainer">
-				<label for="locaation">Location</label>
-				<input type="text" id="location" name="location">
+			<div data-role="fieldcontainer">
+				<label for="newLocaation">Location</label>
+				<input type="text" id="newLocaation" name="newLocaation">
 			</div>
-				<div data-role="fieldcontainer">
-				<label for="geotag">GeoTag : </label>
-				<p id="geolocation">Finding geolocation...</p>
-				<input type="checkbox" id="geotag" name="geotag">
+			<div data-role="fieldcontainer">
+				<label for="newGeotag">GeoTag : </label>
+				<p id="geolocationtag">old location</p>
+				<input type="checkbox" id="newGeotag" name="newGeotag">
 			</div>
-				<div data-role="fieldcontainer">
-				<label for="comments">Comments</label>
-				<textarea id="comments" name="comments"></textarea>
+			<div data-role="fieldcontainer">
+				<label for="newComments">Comments</label>
+				<textarea id="newComments" name="newComments"></textarea>
 			</div>
-			</form>
-	</div>
+			<script>
+		  	$( document ).delegate("#NewEvent", "pageinit", function() {
+				
+			});
+		  </script>
+		</div>
 		<div data-role="footer" data-theme="c" data-id="main" data-position="fixed">
 		<div data-role="navbar">
 				<ul>
 				<li><a href="#EventList" data-icon="arrow-l">Cancel</a></li>
-				<li><a href="#EventList" data-icon="save">Save</a></li>
+				<li><a href="#EventList" data-icon="save" id="instert">Save</a></li>
 				<li><a href="#Camera" data-icon="camera" data-rel="dialog" data-transition="pop">Add Photo</a></li>
 				<li><a href="#" data-icon="facebook">Post Event</a></li>
 			</ul>
+			<script type="text/javascript">
+				 $("#insert").bind ("click", function (event)
+				 {
+					 var title = $("#newTitle").val ();
+					 var date = $("#newDate").val ();
+					 var location = $("#newLocaation").val ();
+					 var geotag = $("#newGeotag").val ();
+					 var comments = $("#newComments").val ();
+					 
+					 db.transaction (function (transaction)
+					 {
+						 var sql = "INSERT INTO tbl_Events " + 
+						 		 "(title, date_time, location, description) " + 
+								 "VALUES (?, ?, ?, ?)";
+						 transaction.executeSql (sql, [title, date, location, comments], function ()
+						 { 
+						 alert ("Event Added");
+						 }, error);
+					});
+				});
+			</script>
 			</div>
 	</div>
 	</div>
@@ -264,31 +283,36 @@
 		<h1>Edit Event</h1>
 	</div>
 		<div data-role="content" id="content" >
-		<div> <img src="img/peoplebg.JPG" width="100%" id="largeImage"> </div>
-		<form action="">
-				<div data-role="fieldcontainer">
-				<label for="title">Title</label>
-				<input type="text" id="title" name="title">
+		<div> 
+			<img src="img/peoplebg.JPG" width="100%" id="largeImage"> </div>
+		
+			<div data-role="fieldcontainer">
+				<label for="editTitle">Title</label>
+				<input type="text" id="editTitle" name="editTitle">
 			</div>
-				<div data-role="fieldcontainer">
-				<label for="date">Date</label>
-				<input type="datetime" id="date" name="date">
+			<div data-role="fieldcontainer">
+				<label for="editDate">Date</label>
+				<input type="datetime" id="editDat" name="editDat">
 			</div>
-				<div data-role="fieldcontainer">
-				<label for="locaation">Location</label>
-				<input type="text" id="location" name="location">
+			<div data-role="fieldcontainer">
+				<label for="editLocaation">Location</label>
+				<input type="text" id="editLocaation" name="editLocaation">
 			</div>
-				<div data-role="fieldcontainer">
-				<label for="geotag">GeoTag : </label>
+			<div data-role="fieldcontainer">
+				<label for="editGeotag">GeoTag : </label>
 				<p id="geolocationtag">old location</p>
-				<input type="checkbox" id="geotag" name="geotag">
+				<input type="checkbox" id="editGeotag" name="editGeotag">
 			</div>
-				<div data-role="fieldcontainer">
-				<label for="comments">Comments</label>
-				<textarea id="comments" name="comments"></textarea>
+			<div data-role="fieldcontainer">
+				<label for="editComments">Comments</label>
+				<textarea id="editComments" name="editComments"></textarea>
 			</div>
-			</form>
-	</div>
+			<script>
+		  	$( document ).delegate("#EditEvent", "pageinit", function() {
+				
+			});
+		  </script>
+		</div>
 		<div data-role="footer" data-theme="c" data-id="main" data-position="fixed">
 		<div data-role="navbar">
 				<ul>
@@ -298,6 +322,7 @@
 				<li id=""><a href="#" data-icon="delete">Delete Event</a></li>
 			</ul>
 			</div>
+			
 	</div>
 </div>
 <div data-role="page" id="Camera">
