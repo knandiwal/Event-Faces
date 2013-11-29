@@ -1,1 +1,0 @@
-This app is developed by Rob and Shey, students at GWU!
