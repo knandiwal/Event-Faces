@@ -28,18 +28,6 @@ var app = {
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
     },
-            
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
-    },
     
     //*************************ADDED BY SHEY: 29 NOV 2013 ****************************//
     //
@@ -53,68 +41,118 @@ var app = {
     },
             
     setupDB: function() {
-        var db = window.openDatabase("EventFacesDB", "1.0", "Event Faces Database", 200000);
+        var db = window.openDatabase("EventFacesDB", "", "Event Faces Database", 200000);
+        db.changeVersion(db.version, "1.2");
         db.transaction(this.createDB, this.errorCB, this.successCB);
     },
 
-    // Populate the database 
+    // Create the database 
     //
     createDB: function(tx) {
-        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_Events (id unique, title, description, geo_tag_lat, geo_tag_long, date_time, post_to_soc_media_event_folder)');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_Faces (id unique, file_name, file_location, face_name, face_vector, photo_id, event_id, identity_id)');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_Photos (id unique, file_name, file_location, event_id)');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_Identity (id, person_name, file_name, file_location, identity_vector)');
-        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_Social (id INTEGER PRIMARY KEY, service, login, password)');
-        
-        //Add Test Data - To confirm that same DB is accessed later on in the app
-        tx.executeSql('INSERT INTO tbl_Social (service, login, password) VALUES ("SERVICE_TEST_555", "LOGIN_TEST", "PWD_TEST")');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS events (id INTEGER PRIMARY KEY, thumb TEXT, ' + 
+                                                    'title TEXT, description TEXT, '+
+                                                    'location TEXT, geoLat NUMERIC, '+
+                                                    'geoLong NUMERIC, date DATETIME, '+
+                                                    'postSoc BOOLEAN, comments TEXT, '+
+                                                    'picWallName TEXT, picWallLoc TEXT, '+
+                                                    'picNum NUMERIC, faceNum NUMERIC)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS photos (' + 
+                                                    'id INTEGER PRIMARY KEY, ' + 
+                                                    'fileName TEXT, fileLoc TEXT, '+
+                                                    'eventID NUMERIC, '+
+                                                    'FOREIGN KEY(eventID) REFERENCES events(id))');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS identity (' +
+                                                    'id INTEGER PRIMARY KEY, ' + 
+                                                    'name TEXT, trainFile TEXT, '+
+                                                    'trainLoc TEXT, vector TEXT)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS faces (' + 
+                                                    'id INTEGER PRIMARY KEY, ' + 
+                                                    'fileName TEXT, fileLoc TEXT, '+
+                                                    'eventID NUMERIC, identID NUMERIC, '+
+                                                    'photoID NUMERIC, vector TEXT, '+
+                                                    'position NUMERIC, width NUMERIC, '+
+                                                    'height NUMERIC, '+
+                                                    'FOREIGN KEY(photoID) REFERENCES photos(id),'+
+                                                    'FOREIGN KEY(identID) REFERENCES identity(id),'+
+                                                    'FOREIGN KEY(eventID) REFERENCES events(id))');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS social (' + 
+                                                    'id INTEGER PRIMARY KEY, ' + 
+                                                    'site TEXT, user TEXT, pass TEXT)');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS userPrefs (' +
+                                                    'id INTEGER PRIMARY KEY, prefKey TEXT UNIQUE, value BOOLEAN)');  
     },
     
     // Transaction error callback
     //
     errorCB: function(err) {
-        console.log("Error processing SQL: "+ err.message);
+        console.log("APP_LOG: Error processing SQL: "+ err.message);
     },
 
     // Transaction success callback
     //
     successCB: function() {
-        console.log('APP_LOG: successCB()...');
+        console.log('APP_LOG: createDB success...');
         app.callQueryDB();
     },
             
     callQueryDB: function() {
-        var db = window.openDatabase("EventFacesDB", "1.0", "Event Faces Database", 200000);
-        db.transaction(this.queryDB, this.errorCB);       
+        var db = window.openDatabase("EventFacesDB", "", "Event Faces Database", 200000);
+        db.transaction(this.queryDB, this.errorCB);
         console.log('APP_LOG: dispatched queryDB()!');
     },
             
     queryDB: function(tx) {
         app.selectQuery(tx);
-        console.log("APP_LOG: queryDB()...");
+        console.log("APP_LOG: dispatched selectQuery()...");
     },
             
     selectQuery: function(tx) {
-        //tx.executeSql('SELECT * FROM tbl_Social', [], this.querySuccess, this.errorCB);
-        tx.executeSql('SELECT * FROM tbl_Social WHERE service="SERVICE_TEST_555"', [], this.querySuccess, this.errorCB);
+        tx.executeSql('SELECT * FROM userPrefs', [], this.querySuccess, this.errorCB);
     },
     
-    // Transaction success callback
-    //
     successDB: function() {
         console.log('APP_LOG: successDB()...');
     },
     
-    querySuccess: function(tx, results) {        
-        console.log("Insert ID = " + results.rows.length);   
-        console.log('APP_LOG: querySuccess()...');
+    querySuccess: function(tx, results) {    
+        console.log('APP_LOG: querySuccess()...');    
+        var numRec = results.rows.length;
+        console.log("APP_LOG: userPrefs.numRecords = " + numRec);   
+        
+        if (numRec > 0) {
+            app.setupFileSystem();
+        }
+        else {
+            app.setupUserPref();
+        }
+    },  
+    
+    setupUserPref: function() {
+        var db = window.openDatabase("EventFacesDB", "", "Event Faces Database", 200000);
+        db.transaction(this.setDefaultValues, this.errorCB, this.onSetDefaultSuccess);
+    },
+            
+    //Add Default Data for social media and geotag settings:: 0=false, 1=true
+    setDefaultValues: function(tx) {        
+        tx.executeSql('INSERT INTO userPrefs (prefKey, value) VALUES ("FACEBOOK", 0)');
+        tx.executeSql('INSERT INTO userPrefs (prefKey, value) VALUES ("INSTAGRAM", 1)');
+        tx.executeSql('INSERT INTO userPrefs (prefKey, value) VALUES ("GEOTAG", 0)');
+        
+        // TO BE REMOVED OR COMMENTED OUT - FOR TESTING PUPOSES ONLY
+        tx.executeSql('INSERT INTO social (site, user, pass) VALUES ("FACEBOOK", "sheyFB", "pass")');
+        tx.executeSql('INSERT INTO social (site, user, pass) VALUES ("INSTAGRAM", "sheyInst", "pass")');        
+        
+        console.log('APP_LOG: setDefaultValues...');
+    },
+            
+    onSetDefaultSuccess: function(tx) {
+        console.log('APP_LOG: onSetDefaultSuccess()');
         app.setupFileSystem();
     },
             
-    //***************FILE SYSTEM SETUP***************** ****************************//
+    //***************FILE SYSTEM SETUP***********************************************//
     
     setupFileSystem: function() {
-        //window.webkitStorageInfo.requestQuota(PERSISTENT, 1024*1024)
         window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, this.onRequestFileSystemSuccess, this.errorCB);
     },
     
@@ -129,12 +167,34 @@ var app = {
    },
 
    onGetDirectorySuccess: function (dir) { 
-       console.log("Created dir "+dir.name);
+       console.log("APP_LOG: Created dir "+dir.name);
+       app.createUserPrefsFile();
    },
 
    onGetDirectoryFail: function (error) { 
-       console.log("Error creating directory "+error.code); 
-   } 
+       console.log("APP_LOG: Error creating directory "+error.code); 
+   }, 
+           
+    createUserPrefsFile: function() {
+        app.receivedEvent("deviceready");
+    },
+            
+    // Update DOM on a Received Event
+    receivedEvent: function(id) {
+        var parentElement = document.getElementById(id);
+        var listeningElement = parentElement.querySelector('.listening');
+        var receivedElement = parentElement.querySelector('.received');
+
+        listeningElement.setAttribute('style', 'display:none;');
+        receivedElement.setAttribute('style', 'display:block;');
+
+        console.log('APP_LOG: Received Event: ' + id);
+        
+        // Redirect to the Main Menu Screen
+        //window.location='./main.html';
+        window.location='./settings.html';
+    }
     
     //**************************************************** ****************************//
+         
 };
