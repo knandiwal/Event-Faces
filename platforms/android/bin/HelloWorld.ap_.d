@@ -16,6 +16,7 @@ C:\Users\Shey\Documents\GitHub\Event-Faces\platforms\android\assets\www\config.x
 C:\Users\Shey\Documents\GitHub\Event-Faces\platforms\android\assets\www\cordova.js \
 C:\Users\Shey\Documents\GitHub\Event-Faces\platforms\android\assets\www\cordova_plugins.js \
 C:\Users\Shey\Documents\GitHub\Event-Faces\platforms\android\assets\www\css \
+C:\Users\Shey\Documents\GitHub\Event-Faces\platforms\android\assets\www\event.html \
 C:\Users\Shey\Documents\GitHub\Event-Faces\platforms\android\assets\www\icon.png \
 C:\Users\Shey\Documents\GitHub\Event-Faces\platforms\android\assets\www\img \
 C:\Users\Shey\Documents\GitHub\Event-Faces\platforms\android\assets\www\index.html \

@@ -95,33 +95,25 @@ var screen = {
             }            
         }
         
-        //$("#usernameTxt").prop("value", "sheybarlow");
         // FOR TESING ONLY....
 //        $("#lbl").text("XXX");        
-//        $("#inp").prop("value", "222");        
-//        console.log($('#geo_slider')[0].selectedIndex);  
-        
-//        for (i=0; i<numRec; i++) {
-//            console.log(results.rows.item(i).prefKey);
-//            console.log(results.rows.item(i).value);
-//        }
+//        $("#inp").prop("value", "222");
     },
     
-    setUserPrefs: function(value) {
-        if (value === 0) return "No";
-        else return "Yes";
-    },
+//    setUserPrefs: function(value) {
+//        if (value === 0) return "No";
+//        else return "Yes";
+//    },
     
     submitSettings: function() {
-        console.log("APP_LOG: SETTINGS.submitSettings!"); 
-        //var geoTag = $( "#lbl" ).text(); 
+        console.log("APP_LOG: SETTINGS.submitSettings()");
         var geoTag = $("#geo_slider").val();
         var fb = $("#fb_slider").val();
         var inst = $("#inst_slider").val();
         
         console.log("APP_LOG: SETTINGS.geoTag = " + geoTag);     
-        console.log("APP_LOG: SETTINGS.geoTag = " + fb);     
-        console.log("APP_LOG: SETTINGS.geoTag = " + inst);
+        console.log("APP_LOG: SETTINGS.fb = " + fb);     
+        console.log("APP_LOG: SETTINGS.inst = " + inst);
         
         window.localStorage.setItem("frm_geoTag", geoTag);
         window.localStorage.setItem("frm_fb", fb);
@@ -135,37 +127,73 @@ var screen = {
             
     updateDB: function(tx) {
         var frm_geotag = window.localStorage.getItem("frm_geoTag");        
-        var query = "UPDATE userPrefs SET value='" + frm_geotag + "' WHERE prefKey='FACEBOOK'";
+        var query = "UPDATE userPrefs SET value='" + frm_geotag + "' WHERE prefKey='GEOTAG'";
+        console.log('APP_LOG: SETTINGS.query => ' + query);
+        screen.updateGeoTag(tx, query);
+    },
+            
+    updateGeoTag: function(tx, query) {
         tx.executeSql(query, [], this.onUpdateGeoTagSuccess, this.errorCB);
     },
             
-    onUpdateGeoTagSuccess: function() {
-        var db = window.openDatabase("EventFacesDB", "", "Event Faces Database", 200000);
-        //db.transaction(this.updateFacebook, this.errorCB);
+    onUpdateGeoTagSuccess: function(tx, results) {
+        console.log('APP_LOG: SETTINGS:: onUpdateGeoTagSuccess()!');
+        screen.updateFacebook(tx);
     },
             
     updateFacebook: function(tx) {
-        var frm_geotag = window.localStorage.getItem("frm_geoTag");        
-        var query = "UPDATE userPrefs SET value='" + frm_geotag + "' WHERE prefKey='FACEBOOK'";
-        tx.executeSql(query, [], this.onUpdateGeoTagSuccess, this.errorCB);
+        var frm_fb = window.localStorage.getItem("frm_fb");        
+        var query = "UPDATE userPrefs SET value='" + frm_fb + "' WHERE prefKey='FACEBOOK'";
+        tx.executeSql(query, [], this.onUpdateFacebookSuccess, this.errorCB);
+    },
+            
+    onUpdateFacebookSuccess: function(tx, results) {
+        console.log('APP_LOG: SETTINGS:: onUpdateFacebookSuccess()!');
+        screen.updateInstagram(tx);
+    },
+    
+    updateInstagram: function(tx) {
+        var frm_inst = window.localStorage.getItem("frm_inst");        
+        var query = "UPDATE userPrefs SET value='" + frm_inst + "' WHERE prefKey='INSTAGRAM'";
+        tx.executeSql(query, [], this.onUpdateInstagramSuccess, this.errorCB);
+    },
+            
+    onUpdateInstagramSuccess: function(tx, results) {
+        console.log('APP_LOG: SETTINGS:: onUpdateInstagramSuccess()!');
+        screen.updateSocialFacebook(tx);
+    },
+    
+    updateSocialFacebook: function(tx) {
+        var fbUser = $("#usernameTxt").val();
+        var fbPass = $("#pwdTxt").val();
+        var query = "UPDATE social SET user='" + fbUser + "', pass='" + fbPass + "' WHERE site='FACEBOOK'";
+        tx.executeSql(query, [], this.onUpdateSocialFacebook, this.errorCB);
+    },
+            
+    onUpdateSocialFacebook: function(tx, results) {
+        console.log('APP_LOG: SETTINGS:: onUpdateSocialFacebook()!');
+        screen.updateSocialInstagram(tx);
+    },
+    
+    updateSocialInstagram: function(tx) {
+        var iUser = $("#inst_usernameTxt").val();
+        var iPass = $("#inst_pwdTxt").val();
+        var query = "UPDATE social SET user='" + iUser + "', pass='" + iPass + "' WHERE site='INSTAGRAM'";
+        tx.executeSql(query, [], this.onUpdateSocialInstagram, this.errorCB);
+    },
+            
+    onUpdateSocialInstagram: function(tx, results) {
+        console.log('APP_LOG: SETTINGS:: onUpdateSocialInstagram()!');
+        screen.allDone();
     },
             
     errorCB: function(err) {
         console.log("APP_LOG: SETTINGS::Error processing SQL: "+ err.message);
     },
             
-    updateDB_old: function() {
-        var form_geotag = window.localStorage.getItem("frm_geoTag");
-        console.log("APP_LOG: SETTINGS.updateDB.geoTag = " + form_geotag);
-        var frm_fb = window.localStorage.getItem("frm_fb");
-        console.log("APP_LOG: SETTINGS.updateDB.fb = " + frm_fb);
-        var frm_inst = window.localStorage.getItem("frm_inst");
-        console.log("APP_LOG: SETTINGS.updateDB.int = " + frm_inst);
-        
-        var db = window.openDatabase("EventFacesDB", "", "Event Faces Database", 200000);
-        db.transaction(this.queryDB, this.errorCB);
-        console.log('APP_LOG: dispatched queryDB()!');
+    allDone: function() {
+       // Redirect to the Main Menu Screen
+        window.location='./main.html'; 
     }
     
 };
-

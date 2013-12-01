@@ -191,8 +191,8 @@ var app = {
         console.log('APP_LOG: Received Event: ' + id);
         
         // Redirect to the Main Menu Screen
-        //window.location='./main.html';
-        window.location='./settings.html';
+        window.location='./main.html';
+        //window.location='./settings.html';
     }
     
     //**************************************************** ****************************//

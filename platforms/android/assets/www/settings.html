@@ -11,12 +11,7 @@ and open the template in the editor.
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=medium-dpi" />
           
         <link rel="stylesheet"  href="css/jquery.mobile-1.3.2.min.css" />
-        <link  rel="stylesheet" href="css/jqm-icon-pack-fa.scss"/>
-
-        <script type="text/javascript" src="phonegap.js"></script>                     
-        <script type="text/javascript" src="js/jquery.js"></script>     
-        <script type="text/javascript" src="js/jquery.mobile-1.3.2.min.js"></script>  
-        <script type="text/javascript" src="js/settings.js"></script>                                                         
+        <link  rel="stylesheet" href="css/jqm-icon-pack-fa.scss"/>                                               
     </head>
     <body>        
         <div data-role="page" id="screen">
@@ -82,27 +77,32 @@ and open the template in the editor.
                             <input type="password" name="password" id="inst_pwdTxt" value=""  />
                         </div>
                         
-                        <br>
-                        <div class="ui-body ui-body-b">
-                            <fieldset class="ui-grid-a">
-                                <div class="ui-block-a"><button type="submit" data-theme="d">Cancel</button></div>
-                                <div class="ui-block-b">
-                                    <button type="submit" data-theme="a" onclick="screen.submitSettings();">Submit</button>
-                                </div>
-                            </fieldset>
-                        </div>
-                        
+                        <br>                        
                     </form>                    
                 </div>
             </div>
 
             <div data-role="footer" data-theme="a" data-position="fixed">
-                <h1>Your Friends, Your event!</h1>
+                <div data-role="navbar">
+                    <ul>
+                        <li><a onclick="go('main');" data-icon="home">Back</a></li>
+                        <li><a data-icon="save" onclick="screen.submitSettings();">Save</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
+
+        <script type="text/javascript" src="phonegap.js"></script>          
+        <script type="text/javascript" src="js/settings.js"></script>                     
+        <script type="text/javascript" src="js/jquery.js"></script>     
+        <script type="text/javascript" src="js/jquery.mobile-1.3.2.min.js"></script>  
         
         <script type="text/javascript">
-                screen.initialize();                
+                screen.initialize();     
+                
+                function go(page) {
+                    window.location = './' + page + '.html';
+               }
         </script>
     </body>
 </html>
