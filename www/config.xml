@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.example.hello" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-<<<<<<< .mine
     <name>Event Faces</name>
     <description>
         An event documentation, and face recognition app.
@@ -10,15 +9,6 @@
     </author>
     <feature name="http://api.phonegap.com/1.0/device" />
     <feature name="http://api.phonegap.com/1.0/file" />
-=======
-     <name>HelloWorld</name>
-     <description>
-          Hello World sample application that responds to the deviceready event.
-     </description>
-     <author email="support@phonegap.com" href="http://phonegap.com">
-          PhoneGap Team
-     </author>
-     <feature name="http://api.phonegap.com/1.0/device" />
      <feature name="http://api.phonegap.com/1.0/battery"/>
      <feature name="http://api.phonegap.com/1.0/camera"/>
      <feature name="http://api.phonegap.com/1.0/contacts"/>
@@ -27,7 +17,6 @@
      <feature name="http://api.phonegap.com/1.0/media"/>
      <feature name="http://api.phonegap.com/1.0/network"/>
      <feature name="http://api.phonegap.com/1.0/notification"/>
->>>>>>> .r36
     
      <preference name="permissions" value="none" />
      <preference name="orientation" value="default" />
