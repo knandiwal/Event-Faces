@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+     <head>
+          <title>TODO supply a title</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width">
+          <script src="http://code.jquery.com/jquery-1.4.3.min.js"></script> 
+          <script src="js/facedetection/ccv.js"></script> 
+          <script src="js/facedetection/face.js"></script>
+          <script src="js/jquery.facedetection.js"></script> 
+
+     </head>
+     <body>
+          <div id="inner_wrap">
+               <div id="demo">
+                    <img src="img/peoplebg.png">
+                    <a href="#" id="detect">Click Here to Start detection</a>
+               </div>
+          </div>
+
+
+          <script>
+
+               $('#detect').click(function() {
+
+                    var coords = $('#demo img').faceDetection({
+                         start: function(img) {
+                              $('.face').remove();
+                              $('#detect').text('Processing...');
+                         },
+                         complete: function(img, coords) {
+                              $('#detect').fadeOut();
+                         },
+                         error: function(img, code, message) {
+                              alert('Error ' + code + ': ' + message);
+                         }
+                    });
+
+                    for (var i = 0; i < coords.length; i++) {
+                         $('<div>', {
+                              'class': 'face',
+                              'css': {
+                                   'position': 'absolute',
+                                   'left': coords[i].positionX + 'px',
+                                   'top': coords[i].positionY + 'px',
+                                   'width': coords[i].width + 'px',
+                                   'height': coords[i].height + 'px'
+                              }
+                         })
+                                 .appendTo('#demo');
+                    }
+
+                    return false;
+               });
+
+          </script> 
+     </body>
+</html>

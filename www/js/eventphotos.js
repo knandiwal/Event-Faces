@@ -13,11 +13,13 @@ var latitude;
 var longitude;
 var location;
 var picURL;
+var date;
 
 var events = {
      initialize: function() {
           events.bindEvents();
           console.log("initialize");
+          events.clearEvent();
      },
      bindEvents: function() {
           document.addEventListener('deviceready', events.onDeviceReady, false);
@@ -45,7 +47,7 @@ var events = {
           console.log('Starting New Event');
           var d = new Date();
           var n = d.getTime();
-          $('#newDate').text(n);
+          date = n;
           var networkState = navigator.network.connection.type;
           var connected = function() {
                console.log('finding connection');
@@ -57,7 +59,7 @@ var events = {
           };
           if (connected && localStorage.getItem("e_title") === null) {
                console.log('finding clocation');
-               geotag.getGeoTag();
+               events.getGeoTag();
                var latlng = new google.maps.LatLng(latitude, longitude);
                geocoder.geocode({'latLng': latlng}, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
@@ -85,21 +87,29 @@ var events = {
                               else {
                                    location = city + ", " + state;
                               }
-                              $('#newLocation').text(location);
                          }
                          else {
-                              $('#newLocation').text('Cannot find locations!');
+                              location = 'Cannot find locations!';
                          }
 
                     }
                });
-               $('#geotagText').replaceWith('<a>' + latatude + ', ' + longitude + '</a>');
+
           }
           if (localStorage.getItem("e_title") !== null) {
                events.getEvent();
                //events.loadNewEvent();
           }
 
+     },
+     insertDate: function() {
+          $('#newDate').text(date);
+     },
+     insertLoc: function() {
+          $('#newLocation').text(location);
+     },
+     insertGeo: function() {
+          $('#geotagText').html('<a>' + latitude + ', ' + longitude + '</a>');
      },
      getEvent: function() {
 
@@ -111,6 +121,12 @@ var events = {
           var photo_file = window.localStorage.getItem("p_file_name");
           var photo_folder = window.localStorage.getItem("p_file_loc");
 
+          $('#newTitle').val(event_title);
+          $('#newDate').val(event_date);
+          $('#newLocation').val(event_loc);
+          $('#geotagText').replaceWith('<a>' + latitude + ', ' + longitude + '</a>');
+          $('#editComments').val(event_comments);
+          $('#largeImage').attr(photo_file);
      },
      setEvent: function() {
           var desc = document.getElementById("newDate").value + " at " + document.getElementById("newLocation").value;
@@ -154,16 +170,13 @@ var events = {
 // Called when a photo is successfully retrieved
 //
 
-
-
-
      onPhotoDataSuccess: function(imageURI) {
           // Uncomment to view the base64 encoded image data
           // console.log(imageData);
 
           // Get image handle
           //
-          var imgProfile = document.getElementById('imgProfile');
+          var imgProfile = document.getElementById('largeImage');
           // Show the captured photo
           // The inline CSS rules are used to resize the image
           //
@@ -203,6 +216,7 @@ var events = {
           // like to store it in database
           window.localStorage.setItem('imagepath', entry.fullPath);
           picURL = entry.toURL();
+          addPhoto();
      },
      resOnError: function(error) {
           console.log()(error.code);
@@ -248,7 +262,7 @@ var events = {
      //
      geotagOnSuccess: function(position) {
           var element = document.getElementById('geolocation');
-          latatude = position.coords.latitude;
+          latitude = position.coords.latitude;
           longitude = position.coords.longitude;
      },
      // onError Callback receives a PositionError object
@@ -282,6 +296,8 @@ var events = {
           window.localStorage.setItem("eventID", id);
      },
      createList: function(tx, results) {
+          window.localStorage.setItem("eventID", results.rows.length);
+          window.localStorage.setItem("eventID", id);
           window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem) {
                for (var i = 0; i < results.rows.length; i++) {
                     var thumbnail = "Events/Event" + results.rows.item(i).id + "/thumb.jpg";

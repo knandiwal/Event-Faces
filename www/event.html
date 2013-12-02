@@ -45,7 +45,7 @@ and open the template in the editor.
 
           </div>
 
-          <div data-role="page" id="NewEventPage" onfocus="">
+          <div data-role="page" id="NewEventPage" >
 
                <div data-role="header">
                     <h1>New Event</h1>
@@ -54,33 +54,31 @@ and open the template in the editor.
                     <div>
                          <img src="img/peoplebg.JPG" width="100%" id="largeImage">
                     </div>
-                    <form action="">
-                         <div data-role="fieldcontainer">
-                              <label for="newTitle">Title</label>
-                              <input type="text" id="newTitle" name="newTitle">
-                         </div>
-                         <div data-role="fieldcontainer">
-                              <label for="newDate">Date</label>
-                              <input type="datetime" id="newDate" name="newDate">
-                         </div>
-                         <div data-role="fieldcontainer">
-                              <label for="newLocation">Location</label>
-                              <input type="text" id="newLocation" name="newLocation">
-                         </div>
-                         <div data-role="fieldcontainer">
-                              <label for="newGeotag">GeoTag : <a id="geotagText">Finding geolocation...</a></label>
-                              <input type="checkbox" id="newGeotag" name="newGeotag">
-                         </div>
-                         <div data-role="fieldcontainer">
-                              <label for="newComments">Comments</label>
-                              <textarea id="newComments" name="newComments"></textarea>
-                         </div>
-                    </form>
+                    <div data-role="fieldcontainer">
+                         <label for="newTitle">Title</label>
+                         <input type="text" id="newTitle" name="newTitle" onload="events.insertDate()">
+                    </div>
+                    <div data-role="fieldcontainer">
+                         <label for="newDate">Date</label>
+                         <input type="datetime" id="newDate" name="newDate" onload="events.insertDate()">
+                    </div>
+                    <div data-role="fieldcontainer">
+                         <label for="newLocation">Location</label>
+                         <input type="text" id="newLocation" name="newLocation" onload="events.insertLoc()">
+                    </div>
+                    <div data-role="fieldcontainer" onload="events.insertGeo()">
+                         <label for="newGeotag">GeoTag : <a id="geotagText">Finding geolocation...</a></label>
+                         <input type="checkbox" id="newGeotag" name="newGeotag">
+                    </div>
+                    <div data-role="fieldcontainer">
+                         <label for="newComments">Comments</label>
+                         <textarea id="newComments" name="newComments"></textarea>
+                    </div>
                </div>
                <div data-role="footer" data-theme="c" data-id="main" data-position="fixed">
                     <div data-role="navbar">
                          <ul>
-                              <li><a href="#EventListPage" data-icon ="arrow-l" data-rel="back">Back</a></li>
+                              <li><a href="#EventListPage" data-icon ="arrow-l" data-rel="back" onclick="events.clearEvent();" >Cancel</a></li>
                               <li><a href="#EventListPage" data-icon="save" onclick="events.saveEvent();">Save</a></li>
                               <li><a data-icon="camera" data-rel="dialog" data-transition="pop" onclick= "events.setEvent();
                                         events.go('#Camera');">Add Photo</a></li>
