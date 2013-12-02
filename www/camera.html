@@ -9,8 +9,54 @@ and open the template in the editor.
           <title>TODO supply a title</title>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width">
+          <script  src="phonegap.js"></script>
+          <script  src="js/jquery.js"></script>
+          <script  src="js/jquery.mobile-1.3.2.min.js"></script>
+          <script  src="js/eventlist.js"></script>
+          <script type="text/javascript">
+               function go(link) {
+                    window.location = link;
+               }
+          </script>
+          <link rel="stylesheet"  href="css/jquery.mobile-1.3.2.min.css" />
+          <link href="css/jqm-icon-pack-fa.css" rel="stylesheet" />
      </head>
      <body>
-          <div>TODO write content</div>
-     </body>
+          <div data-role="page" id="Camera">
+
+               <div data-role="header">
+                    <h1>Choose</h1>
+               </div>
+               <div data-role="content" id="cameraList" >
+                    <button onclick="events.capturePhoto();">Capture Photo</button>
+                    <button onclick="events.getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button>
+                    <button onclick="events.getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button>
+               </div>
+               <div data-role="footer">
+                    <span style="float: right;"><a data-role="button" data-rel="back">Cancel</a></span>
+               </div>
+          </div>
+          <div data-role="page" id="Photo">
+
+               <div data-role="header">
+                    <h1>Photo</h1>
+               </div>
+               <div data-role="content" id="photoAdd" >
+                    <img src="" width="100%" id="largeImage" />
+               </div>
+               <div data-role="footer">
+                    <div data-role="navbar">
+                         <ul>
+                              <li><a date-rel="back" data-icon="l-arrow">Back</a></li>
+                              <li><a onclick="usePhoto();" data-icon="plus">Keep Photo</a></li>
+                              <li><a onclick="go('#Camera');" data-icon ="camera">Take another</a></li>
+                              <li><a onclick="go('faces.html');" data-icon="user">Faces</a></li>
+                         </ul>
+                    </div>
+               </div>
+               <span style="float: right;"><a onclick="events.go('#')" data-role="button" data-rel="back">Cancel</a></span>
+          </div>
+     </div>
+
+</body>
 </html>

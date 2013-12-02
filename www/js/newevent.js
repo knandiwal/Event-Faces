@@ -60,7 +60,9 @@ var newevent = {
      getGeoLocation: function() {
           if (getConnection()) {
                console.log('finding clocation');
-               var latlng = new google.maps.LatLng(latitude, longitude);
+               this.getPosition();
+
+               var latlng = new google.maps.LatLng(window.localStorage.getItem('currLat'), window.localStorage.getItem('currLong'));
                geocoder.geocode({'latLng': latlng}, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                          console.log('got google');
@@ -94,7 +96,28 @@ var newevent = {
 
                     }
                });
-
           }
      },
+     saveEventInfo: function() {
+
+          var results = [$('#newTitle').val(), $('#newDate').val(), $('#newLocation').val(), $('#geotagText').text(), $('#newComments').val, window.localStorage.getItem('geoLong'), window.localStorage.getItem('geoLat')]
+          window.localStorage.setItem('newEvent', results);
+     },
+     getPosition: function() {
+          navigator.geolocation.getCurrentPosition(onSuccess, onError);
+          var onSuccess = function(position) {
+               window.localStorage.setItem('currLat', position.coords.latitude);
+               window.localStorage.setItem('currLong', position.coords.longitude);
+               window.localStorage.setItem('geoLat', position.coords.latitude);
+               window.localStorage.setItem('geoLong', position.coords.longitude);
+
+          };
+     },
+// onError Callback receives a PositionError object
+//
+     onError: function(error) {
+          alert('code: ' + error.code + '\n' +
+                  'message: ' + error.message + '\n');
+     }
+
 };
