@@ -50,7 +50,7 @@ var camera = {
 
           // Get image handle
           //
-          var smallImage = document.getElementById('smallImage');
+          var largeImage = document.getElementById('largeImage');
 
           // Unhide image elements
           //
@@ -76,24 +76,27 @@ var camera = {
           //
           largeImage.src = imageURI;
      },
-     capturePhoto: function() {
-          // Take picture using device camera and retrieve image as base64-encoded string
-          navigator.camera.getPicture(this.onPhotoDataSuccess, this.onFail, {quality: 70,
-               destinationType: destinationType.DATA_URL});
-     },
-     // A button will call this function
-//
-     getPhoto: function(source) {
-          // Retrieve image file location from specified source
-          navigator.camera.getPicture(this.nPhotoURISuccess, this.onFail, {quality: 70,
-               destinationType: destinationType.FILE_URI,
-               sourceType: source});
-     },
-     capturePhotoEdit: function() {
-          // Take picture using device camera, allow edit, and retrieve image as base64-encoded string
-          navigator.camera.getPicture(onPhotoDataSuccess, onFail, {quality: 20, allowEdit: true,
-               destinationType: destinationType.DATA_URL});
-     },
+//     
+//     capturePhoto: function() {
+//          // Take picture using device camera and retrieve image as base64-encoded string
+//          navigator.camera.getPicture(this.onPhotoDataSuccess, this.onFail, {quality: 70,
+//               destinationType: destinationType.DATA_URL});
+//     },
+//     // A button will call this function
+////
+//     getPhoto: function(source) {
+//          // Retrieve image file location from specified source
+//          navigator.camera.getPicture(this.onPhotoURISuccess, this.onFail, {quality: 70,
+//               destinationType: destinationType.FILE_URI,
+//               sourceType: source});
+//     },
+//     capturePhotoEdit: function() {
+//          // Take picture using device camera, allow edit, and retrieve image as base64-encoded string
+//          navigator.camera.getPicture(this.onPhotoDataSuccess, this.onFail, {quality: 20, allowEdit: true,
+//               destinationType: destinationType.DATA_URL});
+//     },
+
+
      onFail: function(message) {
           alert('Failed because: ' + message);
      }
