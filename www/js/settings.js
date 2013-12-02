@@ -94,16 +94,7 @@ var screen = {
                 }
             }            
         }
-        
-        // FOR TESING ONLY....
-//        $("#lbl").text("XXX");        
-//        $("#inp").prop("value", "222");
     },
-    
-//    setUserPrefs: function(value) {
-//        if (value === 0) return "No";
-//        else return "Yes";
-//    },
     
     submitSettings: function() {
         console.log("APP_LOG: SETTINGS.submitSettings()");
