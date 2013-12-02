@@ -19,16 +19,19 @@ and open the template in the editor.
           </style>
           <link rel="stylesheet"  href="css/jquery.mobile-1.3.2.min.css" />
           <link href="css/jqm-icon-pack-fa.css" rel="stylesheet" />
+          <script type="text/javascript" src="phonegap.js"></script>
+          <script type="text/javascript" src="js/jquery.js"></script>
+          <script type="text/javascript" src="js/jquery.mobile-1.3.2.min.js"></script>
      </head>
      <body>
           <div data-role="page" id="frontpage">
 
                <div data-role="content" id="content" >
 
-                    <a data-role="button" data-icon="plus" onclick="go('event');">Events</a>
-                    <a data-role="button" data-icon="camera" onclick="go('gallery');">Gallery</a>
-                    <a data-role="button" data-icon="grid" onclick="go('faces');">Faces</a>
-                    <a data-role="button" data-icon="gear" onclick="go('settings');">Settings</a>
+                    <a data-role="button" data-icon="plus" onclick="go('eventlist.html');">Events</a>
+                    <a data-role="button" data-icon="camera" onclick="go('gallery.html');">Gallery</a>
+                    <a data-role="button" data-icon="grid" onclick="go('faces.html');">Faces</a>
+                    <a data-role="button" data-icon="gear" onclick="go('settings.html');">Settings</a>
 
                </div>
 
@@ -37,13 +40,11 @@ and open the template in the editor.
                </div>
 
           </div>
-          <script type="text/javascript" src="phonegap.js"></script>
-          <script type="text/javascript" src="js/jquery.js"></script>
-          <script type="text/javascript" src="js/jquery.mobile-1.3.2.min.js"></script>
+
           <script type="text/javascript">
-                         function go(page) {
-                              window.location = './' + page + '.html';
-                         }
+               function go(link) {
+                    window.location = link;
+               }
           </script>
      </body>
 </html>
