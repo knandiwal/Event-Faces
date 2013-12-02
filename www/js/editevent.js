@@ -4,18 +4,18 @@
  * and open the template in the editor.
  */
 
-var edit = {
+var eventedit = {
      initialize: function() {
-          eventlist.bindEvents();
+          eventedit.bindEvents();
      },
      bindEvents: function() {
-          document.addEventListener('deviceready', eventlist.onDeviceReady, false);
+          document.addEventListener('deviceready', eventedit.onDeviceReady, false);
           //document.addEventListener('newEvent', events.listEvents, false);
           console.log('waiting for device ready');
      },
      onDeviceReady: function() {
           console.log('device ready on edit event page');
-          edit.setup();
+          eventedit.setup();
      },
      setup: function() {
           var results = window.localStorage.getItem('results');
@@ -26,6 +26,7 @@ var edit = {
           $('input.editLocation').text(results.rows.item(id).location);
           $('a.geotagText').text(results.rows.item(id).geolat + ', ' + results.rows.item(id).geolong);
           $('textarea.editComments').text(results.rows.item(id).comments);
-
      }
+
+
 };

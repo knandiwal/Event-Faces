@@ -11,24 +11,25 @@ and open the template in the editor.
           <meta name="viewport" content="width=device-width">
           <script  src="phonegap.js"></script>
           <script  src="js/jquery.js"></script>
-          <script  src="js/eventphotos.js"></script>
           <script  src="js/jquery.mobile-1.3.2.min.js"></script>
-          <script type="text/javascript" scr="">
+          <script  src="js/eventlist.js"></script>
+          <script type="text/javascript">
                function go(link) {
                     window.location = link;
                }
+               eventlist.initialize();
           </script>
           <link rel="stylesheet"  href="css/jquery.mobile-1.3.2.min.css" />
           <link href="css/jqm-icon-pack-fa.css" rel="stylesheet" />
      </head>
-     <body>
+     <body id="eventlist">
           <div data-role="page" id="EventListPage">
                <div data-role="header">
                     <h1>Events</h1>
                </div>
                <div data-role="content" id="content" >
                     <ul id="eventList" data-role="listview" data-filter="true" data-filter-placeholder="Seach Events...">
-                         <li><a href="newevent.html" onclick="go('newevent.html')"> 
+                         <li><a onclick="go('newevent.html')"> 
                                    <img src="img/plusorange.png" alt ="New Event">
                                    <h4>New Event</h4><p>Add a new event</p>
                               </a>

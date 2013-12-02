@@ -11,7 +11,7 @@ var eventlist = {
      bindEvents: function() {
           document.addEventListener('deviceready', eventlist.onDeviceReady, false);
           //document.addEventListener('newEvent', events.listEvents, false);
-          console.log('waith for device ready');
+          console.log('waiting for for device ready');
      },
      onDeviceReady: function() {
           console.log('device ready');

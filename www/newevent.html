@@ -6,22 +6,23 @@ and open the template in the editor.
 -->
 <html>
      <head>
-          <title>TODO supply a title</title>
+          <title>New Event</title>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width">
           <script  src="phonegap.js"></script>
           <script  src="js/jquery.js"></script>
-          <script  src="js/eventphotos.js"></script>
           <script  src="js/jquery.mobile-1.3.2.min.js"></script>
-          <script type="text/javascript" scr="">
+          <script  src="js/newevent.js"></script>
+          <script type="text/javascript">
                function go(link) {
                     window.location = link;
                }
+               newevent.initialize();
           </script>
           <link rel="stylesheet"  href="css/jquery.mobile-1.3.2.min.css" />
           <link href="css/jqm-icon-pack-fa.css" rel="stylesheet" />
      </head>
-     <body>
+     <body id='newevnt'>
           <div data-role="page" id="NewEventPage" >
 
                <div data-role="header">
@@ -33,17 +34,17 @@ and open the template in the editor.
                     </div>
                     <div data-role="fieldcontainer">
                          <label for="newTitle">Title</label>
-                         <input type="text" id="newTitle" name="newTitle" onload="events.insertDate()">
+                         <input type="text" id="newTitle" name="newTitle"">
                     </div>
                     <div data-role="fieldcontainer">
                          <label for="newDate">Date</label>
-                         <input type="datetime" id="newDate" name="newDate" onload="events.insertDate()">
+                         <input type="datetime" id="newDate" name="newDate"">
                     </div>
                     <div data-role="fieldcontainer">
                          <label for="newLocation">Location</label>
-                         <input type="text" id="newLocation" name="newLocation" onload="events.insertLoc()">
+                         <input type="text" id="newLocation" name="newLocation"">
                     </div>
-                    <div data-role="fieldcontainer" onload="events.insertGeo()">
+                    <div data-role="fieldcontainer">
                          <label for="newGeotag">GeoTag : <a id="geotagText">Finding geolocation...</a></label>
                          <input type="checkbox" id="newGeotag" name="newGeotag">
                     </div>

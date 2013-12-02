@@ -11,13 +11,13 @@ and open the template in the editor.
           <meta name="viewport" content="width=device-width">
           <script  src="phonegap.js"></script>
           <script  src="js/jquery.js"></script>
-          <script  src="js/eventphotos.js"></script>
           <script  src="js/jquery.mobile-1.3.2.min.js"></script>
+          <script  src="js/jquery.editevent.js"></script>
           <script type="text/javascript" scr="">
                function go(link) {
                     window.location = link;
                }
-               edit.initialize();
+               eventedit.initialize();
           </script>
           <link rel="stylesheet"  href="css/jquery.mobile-1.3.2.min.css" />
           <link href="css/jqm-icon-pack-fa.css" rel="stylesheet" />
@@ -34,11 +34,11 @@ and open the template in the editor.
                     </div>
                     <div data-role="fieldcontainer">
                          <label for="editTitle">Title</label>
-                         <input type="text" id="editTitle" name="editTitle" onload="events.insertDate()">
+                         <input type="text" id="editTitle" name="editTitle">
                     </div>
                     <div data-role="fieldcontainer">
                          <label for="editDate">Date</label>
-                         <input type="datetime" id="editDate" name="editDate" onload="events.insertDate()">
+                         <input type="datetime" id="editDate" name="editDate"">
                     </div>
                     <div data-role="fieldcontainer">
                          <label for="editLocation">Location</label>
