@@ -6,7 +6,7 @@ and open the template in the editor.
 -->
 <html>
      <head>
-          <title>TODO supply a title</title>
+          <title>Camera</title>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width">
           <script  src="phonegap.js"></script>
@@ -28,9 +28,9 @@ and open the template in the editor.
                     <h1>Choose</h1>
                </div>
                <div data-role="content" id="cameraList" >
-                    <button onclick="events.capturePhoto();">Capture Photo</button>
-                    <button onclick="events.getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button>
-                    <button onclick="events.getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button>
+                    <button onclick="camera.capturePhoto();">Capture Photo</button>
+                    <button onclick="camera.getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button>
+                    <button onclick="camera.getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button>
                </div>
                <div data-role="footer">
                     <span style="float: right;"><a data-role="button" data-rel="back">Cancel</a></span>
