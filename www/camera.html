@@ -69,14 +69,30 @@ and open the template in the editor.
                     // The inline CSS rules are used to resize the image
                     //
                     largeImage.src = imageURI;
+
+                    createFileEntry(imageURI);
+               }
+
+               function createFileEntry(imageURI) {
+                    window.resolveLocalFileSystemURI(imageURI, copyPhoto, fail);
+               }
+
+               function copyPhoto(fileEntry) {
+                    var eventGal = "Events/Event" + window.localStorage.getItem('eventID') + "/Gallery/";
+                    var fileName = getTime() + ".jpg"
+                    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSys) {
+                         fileSys.root.getDirectory(eventGal, {create: true, exclusive: false}, function(dir) {
+                              fileEntry.copyTo(dir, fileName, onCopySuccess, fail);
+                         }, fail);
+                    }, fail);
                }
 
                // A button will call this function
                //
                function capturePhoto() {
                     // Take picture using device camera and retrieve image as base64-encoded string
-                    navigator.camera.getPicture(onPhotoDataSuccess, onFail, {quality: 50,
-                         destinationType: destinationType.DATA_URL});
+                    navigator.camera.getPicture(onPhotoURISuccess, onFail, {quality: 60,
+                         destinationType: destinationType.FILE_URI});
                }
 
                // A button will call this function
@@ -91,7 +107,7 @@ and open the template in the editor.
                //
                function getPhoto(source) {
                     // Retrieve image file location from specified source
-                    navigator.camera.getPicture(onPhotoURISuccess, onFail, {quality: 50,
+                    navigator.camera.getPicture(onPhotoURISuccess, onFail, {quality: 60,
                          destinationType: destinationType.FILE_URI,
                          sourceType: source});
                }
@@ -100,6 +116,32 @@ and open the template in the editor.
                //
                function onFail(message) {
                     alert('Failed because: ' + message);
+               }
+               function getTime() {
+                    var a_p = "";
+                    var d = new Date();
+                    var curr_date = d.getDate();
+                    var curr_month = d.getMonth();
+                    curr_month++;
+                    var curr_year = d.getFullYear();
+                    var curr_hour = d.getHours();
+                    if (curr_hour < 12) {
+                         a_p = "AM";
+                    } else {
+                         a_p = "PM";
+                    }
+                    if (curr_hour == 0) {
+                         curr_hour = 12;
+                    }
+                    if (curr_hour > 12) {
+                         curr_hour = curr_hour - 12;
+                    }
+                    var curr_min = d.getMinutes();
+                    curr_min = curr_min + "";
+                    if (curr_min.length == 1) {
+                         curr_min = "0" + curr_min;
+                    }
+                    return curr_month + "/" + curr_date + "/" + curr_year + ", " + curr_hour + " : " + curr_min + " " + a_p;
                }
 
           </script>
