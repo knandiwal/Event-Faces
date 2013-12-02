@@ -20,12 +20,12 @@ var eventedit = {
      setup: function() {
           var results = window.localStorage.getItem('results');
           var id = window.localStorage.getItem('eventID');
-          $('img.largeImage').aattr('src', esults.rows.item(id).picWallLoc);
-          $('input.editTitle').text(results.rows.item(id).title);
-          $('input.editDate').text(results.rows.item(id).date);
-          $('input.editLocation').text(results.rows.item(id).location);
-          $('a.geotagText').text(results.rows.item(id).geolat + ', ' + results.rows.item(id).geolong);
-          $('textarea.editComments').text(results.rows.item(id).comments);
+          $('#largeImage').attr('src', results.rows.item(id).picWallLoc);
+          $('#editTitle').val(results.rows.item(id).title);
+          $('#editDate').val(results.rows.item(id).date);
+          $('#editLocation').val(results.rows.item(id).location);
+          $('#geotagText').text(results.rows.item(id).geolat + ', ' + results.rows.item(id).geolong);
+          $('#editComments').val(results.rows.item(id).comments);
      }
 
 

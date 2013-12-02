@@ -17,8 +17,11 @@ var newevent = {
           newevent.setup();
      },
      setup: function() {
-          this.getCurrentLocation();
-          $('input.editTitle').text("At : " + getTime());
+
+          if (!window.localStorage.getItem('newEvent')) {
+               this.getGeoLocation();
+          }
+          $('#newTitle').val("At : " + getTime());
           console.log('setup new event')
      },
      getTime: function() {
@@ -61,7 +64,7 @@ var newevent = {
           if (getConnection()) {
                console.log('finding clocation');
                this.getPosition();
-
+               var Mylocation = "";
                var latlng = new google.maps.LatLng(window.localStorage.getItem('currLat'), window.localStorage.getItem('currLong'));
                geocoder.geocode({'latLng': latlng}, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
@@ -84,23 +87,23 @@ var newevent = {
                          //only report if we got Good Stuff
                          if (city != '' && state != '') {
                               if (poi != '') {
-                                   location = poi + ' in ' + city + ", " + state;
+                                   Mylocation = poi + ' in ' + city + ", " + state;
                               }
                               else {
-                                   location = city + ", " + state;
+                                   Mylocation = city + ", " + state;
                               }
                          }
                          else {
-                              location = 'Cannot find locations!';
+                              Mylocation = 'Cannot find locations!';
                          }
-
+                         $('#newTitle').val("At : " + Mylocation + " on " + getTime());
                     }
                });
           }
      },
      saveEventInfo: function() {
 
-          var results = [$('#newTitle').val(), $('#newDate').val(), $('#newLocation').val(), $('#geotagText').text(), $('#newComments').val, window.localStorage.getItem('geoLong'), window.localStorage.getItem('geoLat')]
+          var results = [$('#newTitle').val(), $('#newDate').val(), $('#newLocation').val(), $('#geotagText').text(), $('#newComments').val, window.localStorage.getItem('geoLong'), window.localStorage.getItem('geoLat')];
           window.localStorage.setItem('newEvent', results);
      },
      getPosition: function() {
