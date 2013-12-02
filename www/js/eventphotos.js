@@ -16,12 +16,12 @@ var picURL;
 
 var events = {
      initialize: function() {
-          this.bindEvents();
+          events.bindEvents();
           console.log("initialize");
      },
      bindEvents: function() {
           document.addEventListener('deviceready', events.onDeviceReady, false);
-          document.addEventListener('newEvent', events.listEvents, false);
+          //document.addEventListener('newEvent', events.listEvents, false);
 
           console.log('bind events');
      },
@@ -29,9 +29,12 @@ var events = {
           console.log('Events page loading');
           pictureSource = navigator.camera.PictureSourceType;
           destinationType = navigator.camera.DestinationType;
-          $("#newEvent").on("pageshow", events.startNew());
-          $("#editEvent").on("pageshow", events.loadEvent());
-          $("#EventList").on("pageshow", events.listEvents());
+          // $(document).on("pageshow", "#NewEventPage", events.startNew());
+          $("#NewEventPage").ready(events.startNew());
+          $("#EditEventPage").ready(events.loadEvent());
+          // $(document).on("pageshow", "#EditEventPage", events.loadEvent());
+          $("#EventListPage").ready(events.listEvents());
+          //$(document).on("pageshow", "#EventListPage", events.listEvents());
 
      },
      go: function(link) {
@@ -40,8 +43,12 @@ var events = {
      },
      startNew: function() {
           console.log('Starting New Event');
+          var d = new Date();
+          var n = d.getTime();
+          $('#newDate').text(n);
           var networkState = navigator.network.connection.type;
           var connected = function() {
+               console.log('finding connection');
                if (networkState == Connection.NONE) {
                     return false;
                } else {
@@ -49,10 +56,12 @@ var events = {
                }
           };
           if (connected && localStorage.getItem("e_title") === null) {
+               console.log('finding clocation');
                geotag.getGeoTag();
                var latlng = new google.maps.LatLng(latitude, longitude);
                geocoder.geocode({'latLng': latlng}, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
+                         console.log('got google');
                          //Check result 0
                          var result = results[0];
                          //look for locality tag and administrative_area_level_1
@@ -81,13 +90,14 @@ var events = {
                          else {
                               $('#newLocation').text('Cannot find locations!');
                          }
-                         $('#geotagText').text(latatude + ', ' + longitude);
+
                     }
                });
+               $('#geotagText').replaceWith('<a>' + latatude + ', ' + longitude + '</a>');
           }
           if (localStorage.getItem("e_title") !== null) {
-               this.getEvent();
-               //this.loadNewEvent();
+               events.getEvent();
+               //events.loadNewEvent();
           }
 
      },
@@ -103,14 +113,16 @@ var events = {
 
      },
      setEvent: function() {
+          var desc = document.getElementById("newDate").value + " at " + document.getElementById("newLocation").value;
+
           window.localStorage.setItem("e_title", document.getElementById("newTitle").value);
-          window.localStorage.setItem("e_description", document.getElementById("newDescription").value);
+          window.localStorage.setItem("e_description", desc);
           window.localStorage.setItem("e_date", document.getElementById("newDate").value);
           window.localStorage.setItem("e_loc", document.getElementById("newLocation").value);
           window.localStorage.setItem("e_comments", document.getElementById("newComments").value);
-          window.localStorage.setItem("p_file_name", document.getElementById("largeImage").attr("src"));
+          window.localStorage.setItem("p_file_name", document.getElementById("largeImage").src);
           window.localStorage.setItem("geotag", document.getElementById("geotagText").text);
-          window.localStorage.setItem("p_file_loc", document.getElementById("newDate").value);
+          window.localStorage.setItem("p_file_loc", document.getElementById("largeImage").src);
      },
      loadNewEvent: function() {
 
@@ -230,7 +242,7 @@ var events = {
 
      },
      getGeoTag: function() {
-          navigator.geolocation.getCurrentPosition(this.geotagOnSuccess, this.onError);
+          navigator.geolocation.getCurrentPosition(events.geotagOnSuccess, events.onError);
      },
      // onSuccess Geolocation
      //
@@ -256,9 +268,15 @@ var events = {
           console.log('APP_LOG: DB access success...');
      },
      listEvents: function() {
-          var db = window.openDatabase("EventFacesDB", "1.0", "Event Faces Database", 200000);
-          db.executeSql("SELECT id, title, description, picNum, FaceNum FROM EventFacesDB.events", [], this.createList, this.errorCB);
+          var db = window.openDatabase("EventFacesDB", "", "Event Faces Database", 200000);
+          db.transaction(events.getListQuerry, events.errorCB, events.successDB);
           console.log('Getting List of events');
+     },
+     successDB: function() {
+          console.log('APP_LOG: successDB()...');
+     },
+     getListQuerry: function(tx) {
+          tx.executeSql("SELECT id, title, description, picNum, FaceNum FROM EventFacesDB.events", [], events.createList, events.errorCB);
      },
      setEventID: function(id) {
           window.localStorage.setItem("eventID", id);
@@ -274,8 +292,8 @@ var events = {
                               reader.onloadend = function(evt) {
                                    url = evt.target.result;
                               };
-                         }, this.onError);
-                    }, this.onError);
+                         }, events.onError);
+                    }, events.onError);
                     $(eventList).append(
                             '<li><a href="#EditEvent" onclick="setEventID(' + results.rows.item(i).id + ');">' +
                             '<img src="' + url + '" alt="thumb">' +
@@ -289,22 +307,28 @@ var events = {
      },
      loadEvent: function(id) {
           var db = window.openDatabase("EventFacesDB", "", "Event Faces Database", 200000);
-          db.transaction(this.getSingleEvent, this.errorCB, this.successCB);
+          db.transaction(events.getSingleEvent, events.errorCB, events.successCB);
           console.log('Getting event ' + id);
      },
      getSingleEvent: function(tx) {
           tx.executeSql("SELECT title, date, location, geoLat, geoLong, comments, picWallLoc, picWallName  FROM EventFacesDB.events where id=" + eventID + ";",
-                  [], this.eventLoadByID, this.errorCB);
+                  [], events.eventLoadByID, events.errorCB);
      },
      eventLoadByID: function(tx, results) {
           $('#editTitle').val(results.rows.item(0).title);
           $('#editDate').val(results.rows.item(0).date);
-          $('#editLocaation').val(results.rows.item(0).locaation);
+          $('#editLocaation').val(results.rows.item(0).locaation)
+                  ;
           $('#editGeolocationTag').text(results.rows.item(0).geoLat + ', ' + results.rows.item(0).geoLong);
           $('#editComments').val(results.rows.item(0).comments);
           $('#largeImage').attr("scr", results.rows.item(0).picWallLoc + results.rows.item(0).picWallName);
      },
      saveEvent: function() {
+          events.setEvent();
+          var db = window.openDatabase("EventFacesDB", "", "Event Faces Database", 200000);
+          db.transaction(events.eventToDB, events.errorCB, events.successCB);
+     },
+     eventToDB: function(tx) {
           var title = window.localStorage.getItem("e_title");
           var desc = window.localStorage.getItem("e_description");
           var comments = window.localStorage.getItem("e_comments");
@@ -316,13 +340,33 @@ var events = {
           var wallLoc = window.localStorage.getItem("p_wall_folder");
           var picNum = window.localStorage.getItem("p_count");
           var faceNum = window.localStorage.getItem("f_count");
+          var thumb = window.localStorage.getItem("has_thumb");
 
-          var db = window.openDatabase("EventFacesDB", "", "Event Faces Database", 200000);
-          db.transaction(this.eventToDB, this.errorCB, this.successCB);
+          var sql = 'INSERT INTO events (thumb, title, description, ' +
+                  'location, geoLat, geoLong, date, comments, ' +
+                  'picWallName, picWallLoc, picNum, faceNum) VALUES' +
+                  '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ';
+          tx.executeSql(sql, [thumb, title, desc, location, geolat, geolong, date, comments, wallName, wallLoc, picNum, faceNum], events.errorCB, events.successCB);
      },
-     eventToDB: function(tx) {
-          var title =
-                  tx
+     eventChangeDB: function(tx) {
+          var title = window.localStorage.getItem("e_title");
+          var desc = window.localStorage.getItem("e_description");
+          var comments = window.localStorage.getItem("e_comments");
+          var date = window.localStorage.getItem("e_date");
+          var geolat = window.localStorage.getItem("g_lat");
+          var geolong = window.localStorage.getItem("g_long");
+          var location = window.localStorage.getItem("g_loc");
+          var wallName = window.localStorage.getItem("p_wall_file");
+          var wallLoc = window.localStorage.getItem("p_wall_folder");
+          var picNum = window.localStorage.getItem("p_count");
+          var faceNum = window.localStorage.getItem("f_count");
+          var thumb = window.localStorage.getItem("has_thumb");
+
+          var sql = 'UPDATE events SET thumb="?", title="?", description="?", ' +
+                  'location="?", geoLat="?", geoLong="?", date="?", comments="?", ' +
+                  'picWallName="?", picWallLoc="?", picNum="?", faceNum="?"' +
+                  'WHERE id="?"; ';
+          tx.executeSql(sql, [thumb, title, desc, location, geolat, geolong, date, comments, wallName, wallLoc, picNum, faceNum, eventID], errorCB, successCB);
      },
      setPhoto: function() {
           tx.executeSql();
