@@ -12,25 +12,37 @@ var wall; // all the wall pics
 var latitude;
 var longitude;
 var location;
-var db;
 var picURL;
 
 var events = {
      initialize: function() {
+          this.bindEvents();
+          console.log("initialize");
+     },
+     bindEvents: function() {
+          document.addEventListener('deviceready', events.onDeviceReady, false);
+          document.addEventListener('newEvent', events.listEvents, false);
+
+          console.log('bind events');
+     },
+     onDeviceReady: function() {
+          console.log('Events page loading');
           pictureSource = navigator.camera.PictureSourceType;
           destinationType = navigator.camera.DestinationType;
-          $(document).on("pageinit", "#NewEvent", this.startNew());
-          $(document).on("pageinit", "#EditEvent", this.loadEvent());
-          $(document).on("pageinit", "#Eventlist", this.listEvents());
-          db = window.openDatabase("EventFacesDB", "1.0", "Event Faces Database", 200000);
+          $("#newEvent").on("pageshow", events.startNew());
+          $("#editEvent").on("pageshow", events.loadEvent());
+          $("#EventList").on("pageshow", events.listEvents());
+
      },
      go: function(link) {
           window.location = link;
+          console.log('going to: ' + link);
      },
      startNew: function() {
-          var networkState = navigator.connection.type;
+          console.log('Starting New Event');
+          var networkState = navigator.network.connection.type;
           var connected = function() {
-               if (networkState === Connection.NONE) {
+               if (networkState == Connection.NONE) {
                     return false;
                } else {
                     return true;
@@ -75,7 +87,7 @@ var events = {
           }
           if (localStorage.getItem("e_title") !== null) {
                this.getEvent();
-               this.loadNewEvent();
+               //this.loadNewEvent();
           }
 
      },
@@ -84,10 +96,11 @@ var events = {
           var event_title = window.localStorage.getItem("e_title");
           var event_desc = window.localStorage.getItem("e_description");
           var event_date = window.localStorage.getItem("e_date");
-          var face_file = window.localStorage.getItem("f_file_name");
-          var face_folder = window.localStorage.getItem("f_file_loc");
+          var event_loc = window.localStorage.getItem("e_loc");
+          var event_comments = window.localStorage.getItem("e_comments");
           var photo_file = window.localStorage.getItem("p_file_name");
           var photo_folder = window.localStorage.getItem("p_file_loc");
+
      },
      setEvent: function() {
           window.localStorage.setItem("e_title", document.getElementById("newTitle").value);
@@ -96,16 +109,26 @@ var events = {
           window.localStorage.setItem("e_loc", document.getElementById("newLocation").value);
           window.localStorage.setItem("e_comments", document.getElementById("newComments").value);
           window.localStorage.setItem("p_file_name", document.getElementById("largeImage").attr("src"));
-          window.localStorage.setItem("p_file_loc", document.getElementById("newDate").value);
+          window.localStorage.setItem("geotag", document.getElementById("geotagText").text);
           window.localStorage.setItem("p_file_loc", document.getElementById("newDate").value);
      },
-     loadNewEvent: function(tx, results) {
+     loadNewEvent: function() {
+
           $('#newTitle').val(results.rows.item(0).title);
           $('#newDate').val(results.rows.item(0).date);
           $('#newLocation').val(results.rows.item(0).locaation);
           $('#geotagText').text(results.rows.item(0).geoLat + ', ' + results.rows.item(0).geoLong);
           $('#editComments').val(results.rows.item(0).comments);
-          $('#largeImage').attr("scr", results.rows.item(0).picWallLoc + results.rows.item(0).picWallName);
+          $('#largeImage').attr("scr", results.rows.item(0).picWallLoc);
+     },
+     loadEditEvent: function() {
+
+          $('#newTitle').val(results.rows.item(0).title);
+          $('#newDate').val(results.rows.item(0).date);
+          $('#newLocation').val(results.rows.item(0).locaation);
+          $('#geotagText').text(results.rows.item(0).geoLat + ', ' + results.rows.item(0).geoLong);
+          $('#editComments').val(results.rows.item(0).comments);
+          $('#largeImage').attr("scr", results.rows.item(0).picWallLoc);
      },
      clearEvent: function() {
           window.localStorage.clear();
@@ -233,8 +256,9 @@ var events = {
           console.log('APP_LOG: DB access success...');
      },
      listEvents: function() {
-          //var db = window.openDatabase("EventFacesDB", "1.0", "Event Faces Database", 200000);
+          var db = window.openDatabase("EventFacesDB", "1.0", "Event Faces Database", 200000);
           db.executeSql("SELECT id, title, description, picNum, FaceNum FROM EventFacesDB.events", [], this.createList, this.errorCB);
+          console.log('Getting List of events');
      },
      setEventID: function(id) {
           window.localStorage.setItem("eventID", id);
@@ -266,6 +290,7 @@ var events = {
      loadEvent: function(id) {
           var db = window.openDatabase("EventFacesDB", "", "Event Faces Database", 200000);
           db.transaction(this.getSingleEvent, this.errorCB, this.successCB);
+          console.log('Getting event ' + id);
      },
      getSingleEvent: function(tx) {
           tx.executeSql("SELECT title, date, location, geoLat, geoLong, comments, picWallLoc, picWallName  FROM EventFacesDB.events where id=" + eventID + ";",
@@ -279,7 +304,7 @@ var events = {
           $('#editComments').val(results.rows.item(0).comments);
           $('#largeImage').attr("scr", results.rows.item(0).picWallLoc + results.rows.item(0).picWallName);
      },
-     saveEvent: function(tx) {
+     saveEvent: function() {
           var title = window.localStorage.getItem("e_title");
           var desc = window.localStorage.getItem("e_description");
           var comments = window.localStorage.getItem("e_comments");
@@ -291,6 +316,13 @@ var events = {
           var wallLoc = window.localStorage.getItem("p_wall_folder");
           var picNum = window.localStorage.getItem("p_count");
           var faceNum = window.localStorage.getItem("f_count");
+
+          var db = window.openDatabase("EventFacesDB", "", "Event Faces Database", 200000);
+          db.transaction(this.eventToDB, this.errorCB, this.successCB);
+     },
+     eventToDB: function(tx) {
+          var title =
+                  tx
      },
      setPhoto: function() {
           tx.executeSql();

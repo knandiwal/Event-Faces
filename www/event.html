@@ -35,7 +35,7 @@ and open the template in the editor.
                <div data-role="footer" data-theme="c" data-id="main" data-position="fixed">
                     <div data-role="navbar">
                          <ul>
-                              <li><a href="main.html" data-icon="home">Back</a></li>
+                              <li><a onclick="events.go('main.html');" data-icon="home">Back</a></li>
                               <li><a href="#NewEvent" data-icon="plus">New Event</a></li>
                               <li><a href="gallery.html" data-icon="grid">Photos</a></li>
                               <li><a href="faces.html" data-icon="user">Faces</a></li>
@@ -81,6 +81,7 @@ and open the template in the editor.
                     <div data-role="navbar">
                          <ul>
                               <li><a href="#EventList" data-icon="arrow-l">Back</a></li>
+                              <li><a href="#EventList" data-icon="save" onclick="events.setEvent()">Back</a></li>
                               <li><a data-icon="camera" data-rel="dialog" data-transition="pop" onclick= "events.setEvent();
                                         events.go('#Camera');">Add Photo</a></li>
                               <li><a href="#" data-icon="facebook">Post Event</a></li>
@@ -158,9 +159,9 @@ and open the template in the editor.
           <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
           <script type="text/javascript" src="phonegap.js"></script>
           <script type="text/javascript" src="js/jquery.js"></script>
-          <script type="text/javascript" src="js/eventphoto.js"></script>
+          <script type="text/javascript" src="js/eventphotos.js"></script>
           <script type="text/javascript">
-
+                         events.initialize();
           </script>
           <script type="text/javascript" src="js/jquery.mobile-1.3.2.min.js"></script>
      </body>
