@@ -122,9 +122,9 @@ var app = {
      },
      //Add Default Data for social media and geotag settings:: 0=false, 1=true
      setDefaultValues: function(tx) {
-          tx.executeSql('INSERT INTO userPrefs (prefKey, value) VALUES ("FACEBOOK", 0)');
+          tx.executeSql('INSERT INTO userPrefs (prefKey, value) VALUES ("FACEBOOK", 1)');
           tx.executeSql('INSERT INTO userPrefs (prefKey, value) VALUES ("INSTAGRAM", 1)');
-          tx.executeSql('INSERT INTO userPrefs (prefKey, value) VALUES ("GEOTAG", 0)');
+          tx.executeSql('INSERT INTO userPrefs (prefKey, value) VALUES ("GEOTAG", 1)');
 
           // TO BE REMOVED OR COMMENTED OUT - FOR TESTING PUPOSES ONLY
           tx.executeSql('INSERT INTO social (site, user, pass) VALUES ("FACEBOOK", "sheyFB", "pass")');

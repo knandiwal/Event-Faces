@@ -102,10 +102,35 @@ var newevent = {
           }
      },
      saveEventInfo: function() {
-
+        console.log('APPLOG::NEW.EVENT: saveEventInfo');        
           var results = [$('#newTitle').val(), $('#newDate').val(), $('#newLocation').val(), $('#geotagText').text(), $('#newComments').val, window.localStorage.getItem('geoLong'), window.localStorage.getItem('geoLat')];
           window.localStorage.setItem('newEvent', results);
+          newevent.callSaveEvent();
      },
+             
+    callSaveEvent: function() {
+          var db = window.openDatabase("EventFacesDB", "", "Event Faces Database", 200000);
+          db.transaction(this.saveEventDB, this.errorCB, this.onSaveEventDBSuccess);
+     },
+             
+    errorCB: function(err) {
+        console.log("APP_LOG: Error processing SQL: " + err.message);
+     },
+             
+     //Add Default Data for social media and geotag settings:: 0=false, 1=true
+     saveEventDB: function(tx) {
+         var title=$('#newTitle').val(), dt= $('#newDate').val(),loc= $('#newLocation').val(), geotag=$('#geotagText').text(), comm=$('#newComments').val;
+         var geolong=window.localStorage.getItem('geoLong'), geolat=window.localStorage.getItem('geoLat');
+         
+         var query = "INSERT INTO events (title, location, geoLong, geoLat, date, comments) VALUES ('" + title + "', '" + loc + "', " + geolong + ", " + geolat + ", '" + dt +"', '" + comm + "')";
+          tx.executeSql(query);
+
+          console.log('APP_LOG: setDefaultValues...');
+     },
+     onSaveEventDBSuccess: function(tx) {
+          console.log('APP_LOG: onSaveEventDBSuccess()');
+     },
+             
      getPosition: function() {
           navigator.geolocation.getCurrentPosition(onSuccess, onError);
           var onSuccess = function(position) {
