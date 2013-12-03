@@ -29,37 +29,20 @@ and open the template in the editor.
                function onDeviceReady() {
                     pictureSource = navigator.camera.PictureSourceType;
                     destinationType = navigator.camera.DestinationType;
+                    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, fileSystemSuccess, fileSystemFail);
                }
 
-               // Called when a photo is successfully retrieved
-               //
-               function onPhotoDataSuccess(imageData) {
-                    // Uncomment to view the base64-encoded image data
-                    // console.log(imageData);
-
-                    // Get image handle
-                    //
-                    var smallImage = document.getElementById('smallImage');
-
-                    // Unhide image elements
-                    //
-                    smallImage.style.display = 'block';
-
-                    // Show the captured photo
-                    // The inline CSS rules are used to resize the image
-                    //
-                    smallImage.src = "data:image/jpeg;base64," + imageData;
-               }
 
                // Called when a photo is successfully retrieved
                //
                function onPhotoURISuccess(imageURI) {
                     // Uncomment to view the image file URI
-                    // console.log(imageURI);
-
+                    console.log(imageURI);
+//                    console.log(imageData);
                     // Get image handle
                     //
                     var largeImage = document.getElementById('largeImage');
+                    var smallImage = document.getElementById('smallImage');
 
                     // Unhide image elements
                     //
@@ -67,40 +50,68 @@ and open the template in the editor.
 
                     // Show the captured photo
                     // The inline CSS rules are used to resize the image
-                    //
+                    // smallImage.src == "data:image/jpeg;base64," + imageData;
                     largeImage.src = imageURI;
 
                     createFileEntry(imageURI);
                }
 
                function createFileEntry(imageURI) {
-                    window.resolveLocalFileSystemURI(imageURI, copyPhoto, fail);
+                    lastFileURI = imageURI;
+                    alert(lastFileURI);
+                    window.resolveLocalFileSystemURI(imageURI, getEntry, function(evt) {
+                         alert(defaultErr);
+                    });
+               }
+               function getEntry(fileEntry) {
+                    copyPhoto(fileEntry);
+                    fileEntry.file(function(file) {
+                         var reader = new FileReader();
+                         reader.onloadend = function(evt) {
+                              $("#largeImage").css("display", "block").attr("src", evt.target.result);
+                         };
+                         reader.onerror = function(evt) {
+                              alert(defaultErr);
+                         };
+                         reader.readAsDataURL(file);
+                         window.localStorage.setItem('ImageURL', reader.toURL(file));
+                    }, function(error) {
+                         alert(defaultErr);
+                    }
+                    );
                }
 
                function copyPhoto(fileEntry) {
                     var eventGal = "Events/Event" + window.localStorage.getItem('eventID') + "/Gallery/";
-                    var fileName = getTime() + ".jpg"
+                    var fileName = this.getTime() + ".jpg"
                     window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSys) {
                          fileSys.root.getDirectory(eventGal, {create: true, exclusive: false}, function(dir) {
                               fileEntry.copyTo(dir, fileName, onCopySuccess, fail);
                          }, fail);
                     }, fail);
+
                }
+
+               // A button will call this function
+               //
+//               function capturePhoto() {
+//                    // Take picture using device camera and retrieve image as base64-encoded string
+//                    navigator.camera.getPicture(onPhotoURISuccess, onFail, {quality: 60,
+//                         destinationType: destinationType.FILE_URI});
+//               }
 
                // A button will call this function
                //
                function capturePhoto() {
-                    // Take picture using device camera and retrieve image as base64-encoded string
-                    navigator.camera.getPicture(onPhotoURISuccess, onFail, {quality: 60,
-                         destinationType: destinationType.FILE_URI});
-               }
-
-               // A button will call this function
-               //
-               function capturePhotoEdit() {
                     // Take picture using device camera, allow edit, and retrieve image as base64-encoded string
-                    navigator.camera.getPicture(onPhotoDataSuccess, onFail, {quality: 20, allowEdit: true,
-                         destinationType: destinationType.DATA_URL});
+                    navigator.camera.getPicture(onPhotoURISuccess, onFail, {
+                         quality: 60,
+                         destinationType: destinationType.FILE_URI,
+                         sourceType: pictureSource.CAMERA,
+                         allowEdit: false,
+                         encodingType: encodingType.JPEG
+                    });
+                    ;
                }
 
                // A button will call this function

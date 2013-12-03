@@ -22,7 +22,7 @@ var newevent = {
                this.getGeoLocation();
           }
           $('#newTitle').val("At : " + getTime());
-          console.log('setup new event')
+          console.log('setup new event');
      },
      getTime: function() {
           var a_p = "";

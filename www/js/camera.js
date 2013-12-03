@@ -11,11 +11,12 @@ var camera = {
           pictureSource = navigator.camera.PictureSourceType;
           destinationType = navigator.camera.DestinationType;
           //request the persistent file system
-          window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, fileSystemSuccess, fileSystemFail);
+//          window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, fileSystemSuccess, fileSystemFail);
      },
      fileSystemSuccess: function(fileSystem) {
           var directoryEntry = fileSystem.root; // to get root path to directory 
-          var eventID = window.localStorage.getItem;
+          var eventID = reader.readAsDataURL(file);
+          getItem('eventID');
           var folder = "Events/Event" + eventID + "/Gallery/";
           directoryEntry.getDirectory(folder, {create: true, exclusive: false}, this.onDirectorySuccess, this.onDirectoryFail);
           var rootdir = fileSystem.root;
